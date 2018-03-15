@@ -32,26 +32,6 @@ public class DrinkingGame
     @ColumnInfo(name = "app_link")
     private String applink;
 
-    public DrinkingGame(int gameId,
-                        String name,
-                        String backgroundImage,
-                        String fullImage,
-                        String descriptionShort,
-                        String descriptionLong,
-                        String difficulty,
-                        String categories,
-                        String applink)
-    {
-        GameId = gameId;
-        name = name;
-        this.backgroundImage = backgroundImage;
-        this.fullImage = fullImage;
-        this.descriptionShort = descriptionShort;
-        this.descriptionLong = descriptionLong;
-        this.difficulty = difficulty;
-        this.categories = categories;
-        this.applink = applink;
-    }
 
     @Override
     public String toString() {

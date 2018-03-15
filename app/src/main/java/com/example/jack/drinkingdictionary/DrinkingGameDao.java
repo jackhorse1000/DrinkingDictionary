@@ -1,6 +1,5 @@
 package com.example.jack.drinkingdictionary;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -23,11 +22,8 @@ public interface DrinkingGameDao {
     public DrinkingGame[] loadAllCategoriesWhere(String category);
 
     @Query("SELECT * FROM drinkinggame WHERE GameId IN (:gameIds)")
-    List<DrinkingGame> loadAllByIds(int[] userIds);
-
-    @Query("SELECT name, description_short FROM DrinkingGame WHERE categories IN (:category)")
-    public LiveData<List<DrinkingGame>> loadGamesFromCategorySync(List<String> category);
-
+    List<DrinkingGame> loadAllByIds(int[] gameIds);
+    
     @Insert
     void insertAll(DrinkingGame... drinkingGames);
 
