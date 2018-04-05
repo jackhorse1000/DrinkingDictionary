@@ -10,6 +10,18 @@ public class DrinkingGame {
     private String descShort;
     private String descLong;
     private String difficulty;
+    private String imageRef;
+
+    public DrinkingGame(String gameName, String descShort, String descLong, String difficulty, String imageRef) {
+        this.gameName = gameName;
+        this.descShort = descShort;
+        this.descLong = descLong;
+        this.difficulty = difficulty;
+        this.imageRef = imageRef;
+    }
+
+    public DrinkingGame(){}
+
 
     public DrinkingGame(int gameId, String gameName, String descShort, String descLong, String difficulty) {
         this.gameId = gameId;
@@ -17,6 +29,15 @@ public class DrinkingGame {
         this.descShort = descShort;
         this.descLong = descLong;
         this.difficulty = difficulty;
+    }
+
+    public DrinkingGame(int gameId, String gameName, String descShort, String descLong, String difficulty, String imageRef) {
+        this.gameId = gameId;
+        this.gameName = gameName;
+        this.descShort = descShort;
+        this.descLong = descLong;
+        this.difficulty = difficulty;
+        this.imageRef = imageRef;
     }
 
 
@@ -38,6 +59,14 @@ public class DrinkingGame {
 
     public void setGameId(int gameId) {
         this.gameId = gameId;
+    }
+
+    public String getImageRef() {
+        return imageRef;
+    }
+
+    public void setImageRef(String imageRef) {
+        this.imageRef = imageRef;
     }
 
     public String getGameName() {

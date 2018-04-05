@@ -19,8 +19,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 public class AddGameActivity extends AppCompatActivity {
-    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference gameRef = mDatabase.child("Games");
+    private DatabaseReference mDatabase;
+    private DatabaseReference gameRef;
 
     private ImageButton mSelectImage;
     private Uri mImageUri = null;
@@ -39,6 +39,9 @@ public class AddGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_game);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        gameRef = mDatabase.child("Games");
 
         mTxt_name = (EditText) findViewById(R.id.txt_name);
         mTxt_descShort = (EditText) findViewById(R.id.txt_short);
@@ -114,8 +117,8 @@ public class AddGameActivity extends AppCompatActivity {
         }
     }
 
-    private void writeNewGame(String gameId, String gameName, String descShort, String descLong, String difficulty) {
-        DrinkingGame game = new DrinkingGame(Integer.parseInt(gameId), gameName, descShort, descLong, difficulty);
+    private void writeNewGame(final String gameId, final String gameName, final String descShort, final String descLong, final String difficulty) {
+
 
         StorageReference filepath = mStorage.child("Game_Images").child(mImageUri.getLastPathSegment());
 
@@ -127,15 +130,24 @@ public class AddGameActivity extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                DatabaseReference newPost = gameRef.push();
+
                 mTxt_name.setText("");
                 mTxt_descShort.setText("");
                 mTxt_descLong.setText("");
                 mTxt_diff.setText("");
                 mProgress.dismiss();
+
+                //can add some code to also get which user has posted which game
+
+                DrinkingGame game = new DrinkingGame(gameName, descShort, descLong, difficulty, downloadUrl.toString());
+                newPost.setValue(game);
+
+                //after submitted go to main screen
             }
         });
 
 
-        gameRef.child(gameId).setValue(game);
     }
 }
