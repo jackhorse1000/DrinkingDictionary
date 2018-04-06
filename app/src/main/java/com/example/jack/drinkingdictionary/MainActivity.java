@@ -1,5 +1,6 @@
 package com.example.jack.drinkingdictionary;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,11 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
                         viewHolder.setTitle(model.getGameName());
                         viewHolder.setShortDesc(model.getDescShort());
+                        viewHolder.setImage(getApplicationContext(), model.getImageRef());
 
                     }
                 };
@@ -82,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
             TextView game_shortDesc = (TextView) mView.findViewById(R.id.game_descShort);
             game_shortDesc.setText(desc);
         }
+
+        public void setImage(Context context, String imageUrl){
+
+            ImageView game_img = (ImageView) mView.findViewById(R.id.game_img);
+            Picasso.get().load(imageUrl).into(game_img);
+        }
+
 
 
     }
