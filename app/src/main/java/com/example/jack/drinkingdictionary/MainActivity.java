@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 if(firebaseAuth.getCurrentUser() == null){
 
                     // Go to the log in screen user is not logged in
-                    Intent logInIntent = new Intent(MainActivity.this, RegisterActivity.class);
+                    Intent logInIntent = new Intent(MainActivity.this, LoginActivity.class);
                     // User will not be able to go back
                     logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(logInIntent);
