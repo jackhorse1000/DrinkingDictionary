@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/login_activity"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
@@ -40,6 +41,14 @@
         android:text="Login"
         tools:layout_editor_absoluteX="147dp"
         tools:layout_editor_absoluteY="108dp" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_google"
+        android:layout_width="199dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_login_register"
+        android:layout_centerHorizontal="true" />
+
 
     <Button
         android:id="@+id/btn_login_register"

@@ -16,14 +16,18 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mGameList;
-    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabaseGames;
+    private DatabaseReference mDatabaseUsers;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -38,7 +42,11 @@ public class MainActivity extends AppCompatActivity {
         mGameList.setLayoutManager(new LinearLayoutManager(this));
 
         // Get Firebase Database Instance
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Games");
+        mDatabaseGames = FirebaseDatabase.getInstance().getReference().child("Games");
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        mDatabaseUsers.keepSynced(true);
+        mDatabaseGames.keepSynced(true);
 
         // Get Firebase Auth Instance
         mAuth = FirebaseAuth.getInstance();
@@ -70,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        //checkUserExist();
+
         mAuth.addAuthStateListener(mAuthListener);
 
         // Create a Firebase Recycler Adapter for each view
@@ -78,15 +88,24 @@ public class MainActivity extends AppCompatActivity {
                         DrinkingGame.class,
                         R.layout.game_row,
                         GameViewHolder.class,
-                        mDatabase
+                        mDatabaseGames
                 ) {
                     @Override
                     protected void populateViewHolder(GameViewHolder viewHolder, DrinkingGame model,
                                                       int position) {
 
+                        String postKey = getRef(position).getKey();
+
                         viewHolder.setTitle(model.getGameName());
                         viewHolder.setShortDesc(model.getDescShort());
                         viewHolder.setImage(getApplicationContext(), model.getImageRef());
+
+                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
 
                     }
                 };
@@ -155,6 +174,34 @@ public class MainActivity extends AppCompatActivity {
     private void goToDrinkGameActivity(){
         Intent intent = new Intent(this, AddGameActivity.class);
         startActivity(intent);
+    }
+
+    private void checkUserExist() {
+
+        final String userId = mAuth.getCurrentUser().getUid();
+
+        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.hasChild(userId)){
+
+                    // Go to the setup screen user is not logged in
+                    Intent setupIntent = new Intent(MainActivity.this, RegisterActivity.class);
+                    // User will not be able to go back
+                    setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(setupIntent);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 }

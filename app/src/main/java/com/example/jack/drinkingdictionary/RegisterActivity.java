@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -79,8 +80,12 @@ public class RegisterActivity extends AppCompatActivity {
                         Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(mainIntent);
+                        finish();
 
 
+                    }else{
+                        Snackbar.make(findViewById(R.id.register_activity), "Registration email already taken.", Snackbar.LENGTH_SHORT).show();
+                        mProgress.dismiss();
                     }
                 }
             });
