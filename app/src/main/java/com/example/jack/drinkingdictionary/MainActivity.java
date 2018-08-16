@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseUsers;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private boolean mProcessLike = false;
+    private DatabaseReference mDatabaseLike;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         // Get Firebase Database Instance
         mDatabaseGames = FirebaseDatabase.getInstance().getReference().child("Games");
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
 
         mDatabaseUsers.keepSynced(true);
         mDatabaseGames.keepSynced(true);
@@ -94,15 +98,55 @@ public class MainActivity extends AppCompatActivity {
                     protected void populateViewHolder(GameViewHolder viewHolder, DrinkingGame model,
                                                       int position) {
 
-                        String postKey = getRef(position).getKey();
+                        final String postKey = getRef(position).getKey();
+                        final String likeCount = "count";
 
                         viewHolder.setTitle(model.getGameName());
                         viewHolder.setShortDesc(model.getDescShort());
                         viewHolder.setImage(getApplicationContext(), model.getImageRef());
+                        viewHolder.setmLikeButton(postKey);
 
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                //Intent to go full screen with the view clicked
+                                Intent fullScreenIntent = new Intent(MainActivity.this, FullScreenActivity.class );
+                                fullScreenIntent.putExtra("gameId", postKey);
+                                startActivity(fullScreenIntent);
+
+
+                            }
+                        });
+
+
+                        viewHolder.mLikeButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                mProcessLike = true;
+
+
+                                    mDatabaseLike.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (mProcessLike) {
+                                                if (dataSnapshot.child(postKey).hasChild(mAuth.getCurrentUser().getUid())) {
+                                                    mDatabaseLike.child(postKey).child(mAuth.getCurrentUser().getUid()).removeValue();
+                                                    mDatabaseLike.child(postKey).child(likeCount).setValue(1);
+                                                    mProcessLike = false;
+
+                                                } else {
+                                                    mDatabaseLike.child(postKey).child(likeCount).setValue(2);
+                                                    mDatabaseLike.child(postKey).child(mAuth.getCurrentUser().getUid()).setValue("random value");
+                                                    mProcessLike = false;
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
 
                             }
                         });
@@ -116,18 +160,45 @@ public class MainActivity extends AppCompatActivity {
 
     public static class GameViewHolder extends RecyclerView.ViewHolder{
         View mView;
-
+        ImageButton mLikeButton;
+        DatabaseReference mDatabaseLike;
+        FirebaseAuth mAuth;
         // Get the view
         public GameViewHolder(View itemView){
             super(itemView);
 
             mView = itemView;
+
+            mLikeButton = (ImageButton) mView.findViewById(R.id.like_button);
+            mDatabaseLike = FirebaseDatabase.getInstance().getReference().child("Likes");
+            mAuth = FirebaseAuth.getInstance();
+            mDatabaseLike.keepSynced(true);
+
+
         }
 
         // Set the Title of the view
         public void setTitle(String name){
             TextView game_name = (TextView) mView.findViewById(R.id.game_name);
             game_name.setText(name);
+        }
+
+        public void setmLikeButton(final String postKey) {
+            mDatabaseLike.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child(postKey).hasChild(mAuth.getCurrentUser().getUid())) {
+                        mLikeButton.setImageResource(R.drawable.heart_full_button);
+                    } else {
+                        mLikeButton.setImageResource(R.drawable.heart_empty_button);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
         // Set the Short Description of the view
