@@ -12,6 +12,16 @@ public class DrinkingGame {
     private String difficulty;
     private String imageRef;
 
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    private String timestamp;
+
     public DrinkingGame(String gameName, String descShort, String descLong, String difficulty, String imageRef) {
         this.gameName = gameName;
         this.descShort = descShort;
@@ -23,21 +33,29 @@ public class DrinkingGame {
     public DrinkingGame(){}
 
 
-    public DrinkingGame(int gameId, String gameName, String descShort, String descLong, String difficulty) {
+    public DrinkingGame(int gameId, String gameName, String descShort, String descLong, String difficulty, String timestamp) {
         this.gameId = gameId;
         this.gameName = gameName;
         this.descShort = descShort;
         this.descLong = descLong;
         this.difficulty = difficulty;
+        this.timestamp = timestamp;
     }
 
-    public DrinkingGame(int gameId, String gameName, String descShort, String descLong, String difficulty, String imageRef) {
+    public DrinkingGame(int gameId,
+                        String gameName,
+                        String descShort,
+                        String descLong,
+                        String difficulty,
+                        String imageRef,
+                        String timestamp) {
         this.gameId = gameId;
         this.gameName = gameName;
         this.descShort = descShort;
         this.descLong = descLong;
         this.difficulty = difficulty;
         this.imageRef = imageRef;
+        this.timestamp = timestamp;
     }
 
 
@@ -50,6 +68,7 @@ public class DrinkingGame {
                 ", descShort='" + descShort + '\'' +
                 ", descLong='" + descLong + '\'' +
                 ", difficulty='" + difficulty + '\'' +
+                ", timestamp='" + timestamp + '\'' +
                 '}';
     }
 
